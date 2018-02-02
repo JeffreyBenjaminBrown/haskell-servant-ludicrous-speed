@@ -1,4 +1,5 @@
-This is an extreme condensation of the Servant tutorial.
+This is an extreme condensation of the Servant tutorial. If you've read that tutorial before and don't want to read it again, you might find this useful.
+
 
 # servant-test
 
