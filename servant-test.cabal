@@ -44,4 +44,5 @@ library
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/servant-test
+  location: https://github.com/JeffreyBenjaminBrown/haskell-servant-ludicrous-speed.git
+

@@ -60,6 +60,7 @@ server1 = return users1
 
 main :: IO ()
 main = run 8081 $ serve (Proxy :: Proxy UserAPI1) server1
+-- Once that's running, this is a qay to query it:
 -- curl http://localhost:8081/users
 
 
@@ -87,7 +88,7 @@ main2 = run 8081 $ serve (Proxy :: Proxy UserAPI2) server2
 
 
 -- | == QueryParam, Capture and ReqBody
-type API = "position" :> Capture "y" Int :> Capture "z" Int :> Get '[JSON] Position
+type API = "position" :> Capture "x" Int :> Capture "y" Int :> Get '[JSON] Position
       :<|> "hello" :> QueryParam "name" String :> Get '[JSON] HelloMessage
       :<|> "marketing" :> ReqBody '[JSON] ClientInfo :> Post '[JSON] Email
 
@@ -130,11 +131,9 @@ emailForClient c = Email from' to' subject' body'
                 ++ " products? Give us a visit!"
 
 server3 :: Server API
-server3 = position
-     :<|> hello
-     :<|> marketing
+server3 = position :<|> hello :<|> marketing
   where position :: Int -> Int -> Handler Position
-        position x y = return (Position x y)
+        position x y = return $ Position x y
 
         hello :: Maybe String -> Handler HelloMessage
         hello mname = return . HelloMessage $ case mname of
@@ -290,6 +289,10 @@ type StaticAPI = "static" :> Raw
 
 main7 = run 8081 $ serve (Proxy :: Proxy StaticAPI) $ serveDirectoryWebApp "/home/jeff"
 --curl http://localhost:8081/static/some-file-in-my-home-folder
+
+
+-- | For running a server, that's as far as I read.
+-- The client section, however, is complete (and much shorter).
 
 
 -- | ==== Nested APIs

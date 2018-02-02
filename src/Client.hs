@@ -40,20 +40,16 @@ instance FromJSON Email
 type API = "position" :> Capture "x" Int :> Capture "y" Int :> Get '[JSON] Position
       :<|> "hello" :> QueryParam "name" String :> Get '[JSON] HelloMessage
       :<|> "marketing" :> ReqBody '[JSON] ClientInfo :> Post '[JSON] Email
+api :: Proxy API
+api = Proxy
 
 position :: Int -- ^ value for "x"
          -> Int -- ^ value for "y"
          -> ClientM Position
-
 hello :: Maybe String -- ^ an optional value for "name"
       -> ClientM HelloMessage
-
 marketing :: ClientInfo -- ^ value for the request body
           -> ClientM Email
-
-api :: Proxy API
-api = Proxy
-
 position :<|> hello :<|> marketing = client api -- ^ magic, not a typo
 
 queries :: ClientM (Position, HelloMessage, Email)
@@ -63,6 +59,7 @@ queries = do
   em  <- marketing (ClientInfo "Alp" "alp@foo.com" 26 ["haskell", "mathematics"])
   return (pos, message, em)
 
+-- | Run Server.main3 before running this, so it has something to talk to.
 run :: IO ()
 run = do
   manager' <- newManager defaultManagerSettings
@@ -75,8 +72,7 @@ run = do
       print em
 
 
--- | Sidenote: Empty endpoints
--- if there's an empty endpoint in the API, client needs to know:
+-- | Sidenote: if there's an empty endpoint in the API, the client must know:
 type API' = API :<|> EmptyAPI
 
 api' :: Proxy API'
